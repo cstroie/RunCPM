@@ -26,8 +26,8 @@
 #define STR(x) STR_HELPER(x)
 
 /* Definition of which CCP to use (must define only one) */
-//#define CCP_INTERNAL	// If this is defined, an internal CCP will emulated
-#define CCP_DR
+#define CCP_INTERNAL	// If this is defined, an internal CCP will emulated
+//#define CCP_DR
 //#define CCP_CCPZ
 //#define CCP_ZCPR2
 //#define CCP_ZCPR3
@@ -80,17 +80,17 @@
 #define CCPHEAD		"\r\nRunCPM Version " VERSION " (CP/M 2.2 " STR(TPASIZE) "K)\r\n"
 
 //#define HASLUA		// Will enable Lua scripting (BDOS call 254)
-						// Should be passed externally per-platform with -DHASLUA
+// Should be passed externally per-platform with -DHASLUA
 
 //#define PROFILE		// For measuring time taken to run a CP/M command
-						// This should be enabled only for debugging purposes when trying to improve emulation speed
+// This should be enabled only for debugging purposes when trying to improve emulation speed
 
 /* Definition for CP/M 2.2 user number support */
 
 #define BATCHA			// If this is defined, the $$$.SUB will be looked for on drive A:
 //#define BATCH0		// If this is defined, the $$$.SUB will be looked for on user area 0
-						// The default behavior of DRI's CP/M 2.2 was to have $$$.SUB created on the current drive/user while looking for it
-						// on drive A: current user, which made it complicated to run SUBMITs when not logged to drive A: user 0
+// The default behavior of DRI's CP/M 2.2 was to have $$$.SUB created on the current drive/user while looking for it
+// on drive A: current user, which made it complicated to run SUBMITs when not logged to drive A: user 0
 
 /* Some environment and type definitions */
 
@@ -128,29 +128,29 @@ typedef unsigned int    uint32;
 
 /* CP/M memory definitions */
 #define RAM_FAST	// If this is defined, all RAM function calls become direct access (see below)
-					// This saves about 2K on the Arduino code and should bring speed improvements
+// This saves about 2K on the Arduino code and should bring speed improvements
 
 #ifdef ESP8266
-#define TPASIZE 32
+#define TPASIZE 48
 #else
 #define TPASIZE 60	// Can be 60 for CP/M 2.2 compatibility or more, up to 64 for extra memory
-					// Values other than 60 or 64 would require rebuilding the CCP
-					// For TPASIZE<60 CCP ORG = (SIZEK * 1024) - 0x0C00
+// Values other than 60 or 64 would require rebuilding the CCP
+// For TPASIZE<60 CCP ORG = (SIZEK * 1024) - 0x0C00
 #endif
 
 #ifdef ESP8266
-#define MEMSIZE 32 * 1024
+#define MEMSIZE 48 * 1024
 #else
 #define MEMSIZE 64 * 1024	// RAM(plus ROM) needs to be 64K to avoid compatibility issues
 #endif
 
 #ifdef RAM_FAST		// Makes all function calls to memory access into direct RAM access (less calls / less code)
-	static uint8 RAM[MEMSIZE];
-	#define _RamSysAddr(a)		&RAM[a]
-	#define _RamRead(a)			RAM[a]
-	#define _RamRead16(a)		((RAM[(a & 0xffff) + 1] << 8) | RAM[a & 0xffff])
-	#define _RamWrite(a, v)		RAM[a] = v
-	#define _RamWrite16(a, v)	RAM[a] = (v) & 0xff; RAM[a + 1] = (v) >> 8
+static uint8 RAM[MEMSIZE];
+#define _RamSysAddr(a)		&RAM[a]
+#define _RamRead(a)			RAM[a]
+#define _RamRead16(a)		((RAM[(a & 0xffff) + 1] << 8) | RAM[a & 0xffff])
+#define _RamWrite(a, v)		RAM[a] = v
+#define _RamWrite16(a, v)	RAM[a] = (v) & 0xff; RAM[a + 1] = (v) >> 8
 #endif
 
 //// Size of the allocated pages (Minimum size = 1 page = 256 bytes)
@@ -200,19 +200,19 @@ extern "C"
 #endif
 
 #ifndef RAM_FAST
-	extern uint8* _RamSysAddr(uint16 address);
-	extern void _RamWrite(uint16 address, uint8 value);
+extern uint8* _RamSysAddr(uint16 address);
+extern void _RamWrite(uint16 address, uint8 value);
 #endif
 
-	extern void _Bdos(void);
-	extern void _Bios(void);
+extern void _Bdos(void);
+extern void _Bios(void);
 
-	extern void _HostnameToFCB(uint16 fcbaddr, uint8* filename);
-	extern void _HostnameToFCBname(uint8* from, uint8* to);
-	extern void _mockupDirEntry(void);
-	extern uint8 match(uint8* fcbname, uint8* pattern);
+extern void _HostnameToFCB(uint16 fcbaddr, uint8* filename);
+extern void _HostnameToFCBname(uint8* from, uint8* to);
+extern void _mockupDirEntry(void);
+extern uint8 match(uint8* fcbname, uint8* pattern);
 
-	extern void _puts(const char* str);
+extern void _puts(const char* str);
 
 #ifdef __cplusplus
 }

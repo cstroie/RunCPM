@@ -786,6 +786,11 @@ void _Bdos(void) {
 		HL = stm32bdos(DE);
 		break;
 #endif
+#if defined board_esp8266
+  case 232:
+    HL = esp8266bdos(DE);
+    break;
+#endif
 		/*
 		C = 249 (F9h) : MakeDisk
 		Makes a disk directory if not existent.
