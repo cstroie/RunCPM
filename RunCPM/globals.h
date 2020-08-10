@@ -130,11 +130,19 @@ typedef unsigned int    uint32;
 #define RAM_FAST	// If this is defined, all RAM function calls become direct access (see below)
 					// This saves about 2K on the Arduino code and should bring speed improvements
 
+#ifdef ESP8266
+#define TPASIZE 32
+#else
 #define TPASIZE 60	// Can be 60 for CP/M 2.2 compatibility or more, up to 64 for extra memory
 					// Values other than 60 or 64 would require rebuilding the CCP
 					// For TPASIZE<60 CCP ORG = (SIZEK * 1024) - 0x0C00
+#endif
 
+#ifdef ESP8266
+#define MEMSIZE 32 * 1024
+#else
 #define MEMSIZE 64 * 1024	// RAM(plus ROM) needs to be 64K to avoid compatibility issues
+#endif
 
 #ifdef RAM_FAST		// Makes all function calls to memory access into direct RAM access (less calls / less code)
 	static uint8 RAM[MEMSIZE];

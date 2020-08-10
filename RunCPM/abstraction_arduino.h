@@ -17,6 +17,9 @@
 #ifdef _STM32_DEF_
 #define HostOS 0x06
 #endif
+#ifdef ESP8266
+#define HostOS 0x07
+#endif
 
 /* Memory abstraction functions */
 /*===============================================================================*/
@@ -173,14 +176,13 @@ void _sys_logbuffer(uint8* buffer) {
 }
 #endif
 
-bool _sys_extendfile(char* fn, unsigned long fpos)
-{
+bool _sys_extendfile(char* filename, unsigned long fpos) {
 	uint8 result = true;
 	File f;
 	unsigned long i;
 
 	digitalWrite(LED, HIGH ^ LEDinv);
-	if (f = SD.open(fn, O_WRITE | O_APPEND)) {
+	if (f = SD.open(filename, O_WRITE | O_APPEND)) {
 		if (fpos > f.size()) {
 			for (i = 0; i < f.size() - fpos; ++i) {
 				if (f.write((uint8)0) != 1) {

@@ -10,7 +10,7 @@
 
 // Board definitions go into the "hardware" folder
 // Choose/change a file from there
-#include "hardware/esp32.h"
+#include "hardware/esp8266.h"
 
 // Delays for LED blinking
 #define sDELAY 50
@@ -19,7 +19,7 @@
 #include "abstraction_arduino.h"
 
 // Serial port speed
-#define SERIALSPD 9600
+#define SERIALSPD 115200
 
 // PUN: device configuration
 #ifdef USE_PUN
@@ -48,9 +48,9 @@ void setup(void) {
   digitalWrite(LED, LOW);
   Serial.begin(SERIALSPD);
   while (!Serial) {	// Wait until serial is connected
-    digitalWrite(LED, HIGH^LEDinv);
+    digitalWrite(LED, HIGH ^ LEDinv);
     delay(sDELAY);
-    digitalWrite(LED, LOW^LEDinv);
+    digitalWrite(LED, LOW ^ LEDinv);
     delay(sDELAY);
   }
 
@@ -77,12 +77,15 @@ void setup(void) {
       _puts("\nFile System initialization failed.\n");
       return;
     }
-#elif defined board_teensy40 
+#elif defined board_teensy40
   _puts("Initializing Teensy 4.0 SD card.\r\n");
   if (SD.begin(SDINIT, SD_SCK_MHZ(25))) {
 #elif defined board_esp32
   _puts("Initializing ESP32 SD card.\r\n");
   SPI.begin(SDINIT);
+  if (SD.begin(SS, SD_SCK_MHZ(SDMHZ))) {
+#elif defined board_esp8266
+  _puts("Initializing ESP8266 SD card.\r\n");
   if (SD.begin(SS, SD_SCK_MHZ(SDMHZ))) {
 #else
   _puts("Initializing SD card.\r\n");
@@ -92,7 +95,7 @@ void setup(void) {
       while (true) {
         _puts(CCPHEAD);
         _PatchCPM();
-	Status = 0;
+        Status = 0;
 #ifndef CCP_INTERNAL
         if (!_RamLoad((char *)CCPname, CCPaddr)) {
           _puts("Unable to load the CCP.\r\nCPU halted.\r\n");
@@ -125,12 +128,12 @@ void setup(void) {
 }
 
 void loop(void) {
-  digitalWrite(LED, HIGH^LEDinv);
+  digitalWrite(LED, HIGH ^ LEDinv);
   delay(DELAY);
-  digitalWrite(LED, LOW^LEDinv);
+  digitalWrite(LED, LOW ^ LEDinv);
   delay(DELAY);
-  digitalWrite(LED, HIGH^LEDinv);
+  digitalWrite(LED, HIGH ^ LEDinv);
   delay(DELAY);
-  digitalWrite(LED, LOW^LEDinv);
+  digitalWrite(LED, LOW ^ LEDinv);
   delay(DELAY * 4);
 }
